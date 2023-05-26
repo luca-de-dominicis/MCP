@@ -77,8 +77,22 @@ constraint forall(c in 1..m)(
 %     forall(j1 in k+1..n+1)(tour[i,j1] = o)); 
         
 % courier tour symmetry breaking
+% constraint symmetry_breaking_constraint(
+%   lex_lesseq(array1d(tour), [ tour[c,j] | c in reverse(1..m), j in 0..n+1 ]) 
+%   /\ forall(c in 1..m)(
+%     let {var int: maxShift = count(h in 0..n)(tour[c, h]==o)-2} in
+%     forall(shift in 1..maxShift)(
+%       lex_lesseq(tour[c, 0..n+1], [tour[c, (j + shift + 1) mod n + 1] | j in 0..n+1])
+%     )
+%   )
+% );
+
 constraint symmetry_breaking_constraint(
-  lex_lesseq(array1d(tour), [ tour[c,j] | c in reverse(1..m), j in 0..n+1 ])
+  lex_lesseq(array1d(tour), [ tour[c,j] | c in reverse(1..m), j in 0..n+1 ]) 
+  /\ forall(c in 1..m)(
+    let {var int: maxShift = count(h in 0..n)(tour[c, h]==o)-2} in
+    lex_lesseq(tour[c, 0..n+1], [tour[c, (j + maxShift + 1) mod n + 1] | j in 0..n+1])
+  )
 );
         
 var int: maxDist = max(c in 1..m)(sum(j in 0..n)(D[tour[c,j], tour[c,j+1]]));
@@ -88,7 +102,7 @@ var int: totalDist = sum(c in 1..m, j in 0..n)(D[tour[c,j], tour[c,j+1]]);
 % maxdist boundness constraints
 constraint (
   maxDist >= min(i in 1..n)(D[o,i] + D[i,o])
-);     
+);
 
 solve
  :: int_search(tour, dom_w_deg, indomain_random)
