@@ -1,4 +1,4 @@
-for file in ./Inst2/*; do
+for file in $1/*; do
   if [[ $file == *.dat ]]
   then
     base=${file%.*}
