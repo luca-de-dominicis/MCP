@@ -115,7 +115,7 @@ else:
 output_dict = {
     "cbc":
     {
-        "time": math.ceil(elapsed_time),
+        "time": math.floor(elapsed_time),
         "optimal": status == OptimizationStatus.OPTIMAL,
         "obj": round(model.objective_value),
         "sol": [courier_tour(c) for c in range(m)]

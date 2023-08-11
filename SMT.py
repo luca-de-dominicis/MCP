@@ -157,7 +157,7 @@ else:
 output_dict = {
     "Z3":
     {
-        "time": math.ceil(elapsed_time),
+        "time": math.floor(elapsed_time),
         "optimal": status == sat,
         "obj": str(z.value()),
         "sol": [courier_tour(c) for c in range(m)]

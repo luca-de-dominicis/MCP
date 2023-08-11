@@ -10,6 +10,5 @@ COPY . .
 # Installing python and its required libraries
 RUN apt-get update \
   && apt-get install -y python3 \
-  && apt-get install -y python3-pip
-
-CMD python3 -m http.server 
+  && apt-get install -y python3-pip \
+  && python3 -m pip install -r requirements.txt

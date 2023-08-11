@@ -96,7 +96,7 @@ constraint symmetry_breaking_constraint(
 );
         
 var int: maxDist = max(c in 1..m)(sum(j in 0..n)(D[tour[c,j], tour[c,j+1]]));
-var int: totalDist = sum(c in 1..m, j in 0..n)(D[tour[c,j], tour[c,j+1]]);
+% var int: totalDist = sum(c in 1..m, j in 0..n)(D[tour[c,j], tour[c,j+1]]);
 
 
 % maxdist boundness constraints
@@ -105,7 +105,7 @@ constraint (
 );
 
 solve
- :: int_search(tour, dom_w_deg, indomain_random)
+ :: int_search(tour, input_order, indomain)
  :: restart_luby(1000)
  minimize maxDist;
 
