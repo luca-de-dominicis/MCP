@@ -38,3 +38,6 @@ jupyter nbconvert --to script SMT.ipynb && grep -vE '# In\[[0-9]+\]:' SMT.py > t
 
 ## TODO
 - Report
+- Aggiungere il cambio .dat-.dzn nello script
+- Aggiungere lower-bound alla max dist
+- Aggiungere immagini per capire meglio (se necessario e se possibile)

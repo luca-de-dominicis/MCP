@@ -64,7 +64,7 @@ model.objective = maxDist
 for j in range(n):
     model += xsum([tour[c][i][j] for c in range(m) for i in range(n+1)]) == 1
 
-# Each courier get only one time to the same item
+# Each courier gets only one time to the same item
 for c in range(m):
     for i in range(n+1):
         model += xsum([tour[c][i][j] for j in range(n+1)]) == xsum([tour[c][j][i] for j in range(n+1)]) 

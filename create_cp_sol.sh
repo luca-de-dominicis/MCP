@@ -5,6 +5,7 @@ for file in $1/*; do
     num=${base: -2}
     echo "---Solving CP for instance $num usign GECODE---"
     echo "gecode" > .temp/temp_$num.out
+    #modifca.py $file
     minizinc -m MCP_CP.mzn -d $file --time-limit 300000 --solver gecode -D mzn_ignore_symmetry_breaking_constraints=true --output-time --output-objective --output-mode json --json-stream --search-complete-msg "optimal" | head -n -1 >> .temp/temp_$num.out
 
     echo "---Solving CP for instance $num usign GECODE with symbreak---"
