@@ -38,7 +38,7 @@ for line in lines:
             js = json.loads(line)
             out = {
                   "time": math.floor(float(js["time"])/1000),
-                  "optimal": js["time"]<=300000,
+                  "optimal": js["time"]<300000,
                   "obj": js["output"]["json"]["_objective"],
                   "sol": [courier_tour(c) for c in js["output"]["json"]["tour"]]
             }

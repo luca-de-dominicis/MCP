@@ -46,14 +46,16 @@ constraint forall(c in 1..m)(
    tour[c,0] = o /\ tour[c,n+1] = o
 );
 
-% Assigned items must be in courier's tour   
-constraint forall(c in 1..m, i in 1..n)(
-  dest_assignment[i,c] == 1 -> exists(j in 1..n)(tour[c,j] = i)
-);
-
 % Each assigned item is dispatched just once
 constraint forall(c in 1..m, i in 1..n)(
    dest_assignment[i,c] == 1 -> (count(j in 0..n+1)(tour[c,j] == i) == 1)
+);
+
+% Assigned items must be in courier's tour
+constraint redundant_constraint(
+  forall(c in 1..m, i in 1..n)(
+    dest_assignment[i,c] == 1 -> exists(j in 1..n)(tour[c,j] = i)
+  )
 );
 
 % If courer i does not dispatch item j, then j is not in his tour
@@ -64,11 +66,12 @@ constraint redundant_constraint(
 );
 
 % Can't depart again once at the depot   
-constraint forall(c in 1..m)(
-  forall(j in 1..n)(
-    if tour[c,j] == o
-      then tour[c,j+1] = o
-    endif
+constraint redundant_constraint(
+  forall(c in 1..m, j in 1..n)(
+      % if tour[c,j] == o
+      %   then tour[c,j+1] = o
+      % endif
+      tour[c,j] == o -> tour[c,j+1] == o
   )
 );
    
