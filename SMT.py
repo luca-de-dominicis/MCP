@@ -159,7 +159,7 @@ output_dict = {
     {
         "time": math.floor(elapsed_time),
         "optimal": status == sat,
-        "obj": str(z.value()),
+        "obj": int(str(z.value())),
         "sol": [courier_tour(c) for c in range(m)]
     }
 }

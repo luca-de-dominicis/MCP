@@ -42,3 +42,6 @@ jupyter nbconvert --to script SMT.ipynb && grep -vE '# In\[[0-9]+\]:' SMT.py > t
 - Aggiungere lower-bound alla max dist
 - Aggiungere immagini per capire meglio (se necessario e se possibile)
 - Aggiungere dettagli a sezione implied constraints
+- Secondo me (Luca) l'ultimo constraint implied in CP non è un implied e va trasferito nella sezione sopra
+- TotalDist non credo sia necessaria come variabile
+- Controllare che effettivamente gli implied constraint diano lo stesso risultato ( per definizione non modificano il solution set)
