@@ -91,9 +91,9 @@ for c in range(m):
     s.add(And(tour[c][0] == o, tour[c][n+1] == o))
 
 # Assigned items must be in courier's tour
-for c in range(m):
-    for i in range(n):
-        s.add(Implies(assignment[i][c], at_least_one_np([tour[c][j] == i for j in range(1, n+1)])))
+# for c in range(m):
+#     for i in range(n):
+#         s.add(Implies(assignment[i][c], at_least_one_np([tour[c][j] == i for j in range(1, n+1)])))
 
 # Each assigned item is dispatched just once
 for c in range(m):
@@ -118,7 +118,7 @@ for c in range(m):
 # Limit the range of assignable item to only valid one
 for c in range(m):
     for j in range(1,n+1):
-        s.add(And(Not(tour[c][j]>n), Not(tour[c][j]<0)))
+        s.add(And(tour[c][j]<=n, tour[c][j]>=0))
 
 
 # Objective function, minize max distance
