@@ -44,3 +44,4 @@ jupyter nbconvert --to script SMT.ipynb && grep -vE '# In\[[0-9]+\]:' SMT.py > t
 - Controllare che effettivamente gli implied constraint diano lo stesso risultato ( per definizione non modificano il solution set)
 - I symbreak che abbiamo scritto non funzionano
 - Il constraint "Having an item in the tour implies that the item is assigned" può essere messo anche in CP
+- Controllare teorie e sort
