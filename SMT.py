@@ -58,7 +58,7 @@ def all_false(bool_vars):
 start = time.time()
 
 #Decision variables
-assignment = [[Bool(f'assignment_{i}_{j}') for j in range(m)] for i in range(n)]
+dest_assignment = [[Bool(f'dest_assignment_{i}_{j}') for j in range(m)] for i in range(n)]
 
 # tour[i][j] = x ---> courier i dispatch item x at j-th route
 tour = [[Int(f'tour_{i}_{j}') for j in range(n+2)] for i in range(m)]
@@ -80,11 +80,11 @@ for i in range(n+1):
 
 # Each item is assigned to exactly one courier
 for i in range(n):
-    s.add(exactly_one_np([assignment[i][j] for j in range(m)]))
+    s.add(exactly_one_np([dest_assignment[i][j] for j in range(m)]))
 
 # Each courier cannot load more than his capacity
 for j in range(m):
-    s.add(sum([If(assignment[i][j], size[i], 0) for i in range(n)]) <= load[j])
+    s.add(sum([If(dest_assignment[i][j], size[i], 0) for i in range(n)]) <= load[j])
 
 # Initial and final destination are the same
 for c in range(m):
@@ -93,17 +93,17 @@ for c in range(m):
 # Assigned items must be in courier's tour
 # for c in range(m):
 #     for i in range(n):
-#         s.add(Implies(assignment[i][c], at_least_one_np([tour[c][j] == i for j in range(1, n+1)])))
+#         s.add(Implies(dest_assignment[i][c], at_least_one_np([tour[c][j] == i for j in range(1, n+1)])))
 
 # Each assigned item is dispatched just once
 for c in range(m):
     for i in range(n):
-        s.add(Implies(assignment[i][c], exactly_one_np([tour[c][j] == i for j in range(1,n+1)])))
+        s.add(Implies(dest_assignment[i][c], exactly_one_np([tour[c][j] == i for j in range(1,n+1)])))
 
 # If courier c does not dispatch item i, then i is not in his tour
 for c in range(m):
     for i in range(n):
-        s.add(Implies(Not(assignment[i][c]), all_false([tour[c][j] == i for j in range(1, n+1)])))
+        s.add(Implies(Not(dest_assignment[i][c]), all_false([tour[c][j] == i for j in range(1, n+1)])))
 
 # Can't go back to deposit
 for c in range(m):
@@ -113,7 +113,7 @@ for c in range(m):
 # Having an item in the tour implies that the item is assigned
 for c in range(m):
     for j in range(1,n+1):
-        s.add([Implies(tour[c][j] == i, assignment[i][c]) for i in range(n)])
+        s.add([Implies(tour[c][j] == i, dest_assignment[i][c]) for i in range(n)])
 
 # Limit the range of assignable item to only valid one
 for c in range(m):
@@ -139,7 +139,7 @@ if status == sat:
     print("sat")
     # for i in range(n):
         # for j in range(m):
-            # print(model[assignment[i][j]], end = " ")
+            # print(model[dest_assignment[i][j]], end = " ")
         # print()
     for i in range(m):
         print(f"Courier {i}")
@@ -152,15 +152,15 @@ if status == sat:
     print("MaxDist:", z.value())
     # print("Total Dist:", sum(dist))
 else:
-    print("unsat")
+    print(status)
 
 output_dict = {
     "Z3":
     {
         "time": math.floor(elapsed_time),
         "optimal": status == sat,
-        "obj": int(str(z.value())),
-        "sol": [courier_tour(c) for c in range(m)]
+        "obj": int(str(z.value())) if status == sat else 0,
+        "sol": [courier_tour(c) for c in range(m)] if status == sat else [] 
     }
 }
 

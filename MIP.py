@@ -47,12 +47,15 @@ o = n
 start = time.time()
 # Matrix model
 model = Model(sense=MINIMIZE, solver_name=CBC)
+model.emphasis = 1 #feasibility
+model.threads = 8
+model.preprocess = 1 #enabled
 
 # tour[c,i,j] == 1 ---> courier c performed movement from i to j
 tour = model.add_var_tensor((m, n+1, n+1), "tour", var_type=BINARY)
 
 # variable for subtours elimination
-u = [model.add_var("u[%d]" % i, var_type=INTEGER, lb=0, ub=n) for i in range(n)]
+u = [model.add_var("u[%d]" % i, var_type=INTEGER, lb=1, ub=n) for i in range(n)]
 
 
 maxDist = model.add_var("maxDist", var_type=INTEGER)
@@ -108,9 +111,15 @@ if status == OptimizationStatus.OPTIMAL:
     print('optimal solution cost {} found'.format(model.objective_value))
 elif status == OptimizationStatus.FEASIBLE:
     elapsed_time = time_limit
+    print('NON optimal')
+    print('feasible solution cost {} found'.format(model.objective_bound))
 else:
     elapsed_time = time_limit
-    print('no feasible solution found, lower bound is: {}'.format(m.objective_bound))
+    try:
+        print(m.objective_bound)
+    except:
+        print(m.objective_value)
+
         
 output_dict = {
     "cbc":

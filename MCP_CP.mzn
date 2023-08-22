@@ -96,11 +96,10 @@ constraint redundant_constraint(
 % );
 
 constraint symmetry_breaking_constraint(
-  % lex_lesseq(array1d(tour), [ tour[c,j] | c in reverse(1..m), j in 0..n+1 ])
-  % /\ forall(c in 1..m)(
-  %   let {var int: maxShift = count(h in 0..n)(tour[c, h]==o)-2} in
-  %   lex_lesseq(tour[c, 0..n+1], [tour[c, (j + maxShift + 1) mod n + 1] | j in 0..n+1])
-  % )
+  forall(c in 1..m)(
+    let {var int: maxShift = count(h in 0..n+1)(tour[c, h]==o)-2} in
+    lex_lesseq([tour[c, i] | i in 0..n+1], [tour[c, (j + maxShift + 1) mod o] | j in 0..n+1])
+  )
 );
 
 var int: maxDist = max(c in 1..m)(sum(j in 0..n)(D[tour[c,j], tour[c,j+1]]));
@@ -118,18 +117,22 @@ solve
  minimize maxDist;
 
 % User friendly output
-% output [
-%  "MaxDist: ", show(maxDist), "\n",
+output [
+ "MaxDist: ", show(maxDist), "\n",
 %  "Total Dist:", show(totalDist), "\n",
-% ]++
-% ["Tours:", "\n"]++
-% [
-%  if j == n+1 then "\n" 
+]++
+["Tours:", "\n"]++
+[
+%  if j == n+1 then show(tour[i,j]) ++ "\n" 
 %    elseif fix(tour[i,j]) == n+1 then "o " 
 %    else show(tour[i,j]) ++ " " 
 %  endif |
 %  i in 1..m, j in 0..n+1
-% ]
+  if j == n+1 then show(tour[i,j]) ++ "\n"
+   else show(tour[i,j]) ++ " " 
+ endif |
+ i in 1..m, j in 0..n+1
+]
 
     
    

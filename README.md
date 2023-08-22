@@ -40,7 +40,5 @@ jupyter nbconvert --to script SMT.ipynb && grep -vE '# In\[[0-9]+\]:' SMT.py > t
 - Report
 - Aggiungere lower-bound alla max dist
 - Aggiungere immagini per capire meglio (se necessario e se possibile)
-- Aggiungere dettagli a sezione implied constraints
-- Controllare che effettivamente gli implied constraint diano lo stesso risultato ( per definizione non modificano il solution set)
-- I symbreak che abbiamo scritto non funzionano
-- Il constraint "Having an item in the tour implies that the item is assigned" può essere messo anche in CP
+- Il primo symbreak era concettualmente sbagliato, il secondo forse è solo scritto male
+- Aggiungere nel report che in MIP abbiamo provato alcuni flag (emphasis, threads, preprocess)
