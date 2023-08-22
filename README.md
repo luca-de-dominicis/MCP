@@ -42,3 +42,5 @@ jupyter nbconvert --to script SMT.ipynb && grep -vE '# In\[[0-9]+\]:' SMT.py > t
 - Aggiungere immagini per capire meglio (se necessario e se possibile)
 - Il primo symbreak era concettualmente sbagliato, il secondo forse è solo scritto male
 - Aggiungere nel report che in MIP abbiamo provato alcuni flag (emphasis, threads, preprocess)
+- Modificare sezione validation e experimental
+- Trovare una quadra per i constraint di cp e verificare che gli implied non cambino il solution set

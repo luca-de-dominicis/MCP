@@ -51,13 +51,13 @@ constraint forall(c in 1..m, i in 1..n)(
    dest_assignment[i,c] == 1 -> (count(j in 0..n+1)(tour[c,j] == i) == 1)
 );
 
-% Can't depart again once at the depot
-constraint forall(c in 1..m, j in 1..n)(
-    % if tour[c,j] == o
-    %   then tour[c,j+1] = o
-    % endif
-    tour[c,j] == o -> tour[c,j+1] == o
-);
+% % Can't depart again once at the depot
+% constraint forall(c in 1..m, j in 1..n)(
+%     % if tour[c,j] == o
+%     %   then tour[c,j+1] = o
+%     % endif
+%     tour[c,j] == o -> tour[c,j+1] == o
+% );
 
 % Assigned items must be in courier's tour
 constraint redundant_constraint(
@@ -85,8 +85,8 @@ constraint redundant_constraint(
 %     forall(j1 in k+1..n+1)(tour[i,j1] = o)); 
         
 % courier tour symmetry breaking
-% constraint symmetry_breaking_constraint(
-%   lex_lesseq(array1d(tour), [ tour[c,j] | c in reverse(1..m), j in 0..n+1 ]) 
+constraint symmetry_breaking_constraint(
+ lex_lesseq(array1d(tour), [ tour[c,j] | c in reverse(1..m), j in 0..n+1 ]));
 %   /\ forall(c in 1..m)(
 %     let {var int: maxShift = count(h in 0..n)(tour[c, h]==o)-2} in
 %     forall(shift in 1..maxShift)(
@@ -95,12 +95,12 @@ constraint redundant_constraint(
 %   )
 % );
 
-constraint symmetry_breaking_constraint(
-  forall(c in 1..m)(
-    let {var int: maxShift = count(h in 0..n+1)(tour[c, h]==o)-2} in
-    lex_lesseq([tour[c, i] | i in 0..n+1], [tour[c, (j + maxShift + 1) mod o] | j in 0..n+1])
-  )
-);
+% constraint symmetry_breaking_constraint(
+%   forall(c in 1..m)(
+%     let {var int: maxShift = count(h in 0..n+1)(tour[c, h]==o)-2} in
+%     lex_lesseq([tour[c, i] | i in 0..n+1], [tour[c, (j + maxShift + 1) mod o] | j in 0..n+1])
+%   )
+% );
 
 var int: maxDist = max(c in 1..m)(sum(j in 0..n)(D[tour[c,j], tour[c,j+1]]));
 % var int: totalDist = sum(c in 1..m, j in 0..n)(D[tour[c,j], tour[c,j+1]]);
