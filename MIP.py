@@ -49,13 +49,13 @@ start = time.time()
 model = Model(sense=MINIMIZE, solver_name=CBC)
 model.emphasis = 1 #feasibility
 model.threads = 8
-model.preprocess = 1 #enabled
+model.preprocess = 0 #disabled
 
 # tour[c,i,j] == 1 ---> courier c performed movement from i to j
 tour = model.add_var_tensor((m, n+1, n+1), "tour", var_type=BINARY)
 
 # variable for subtours elimination
-u = [model.add_var("u[%d]" % i, var_type=INTEGER, lb=1, ub=n) for i in range(n)]
+u = [model.add_var("u[%d]" % i, var_type=INTEGER, lb=0, ub=n) for i in range(n)]
 
 
 maxDist = model.add_var("maxDist", var_type=INTEGER)
