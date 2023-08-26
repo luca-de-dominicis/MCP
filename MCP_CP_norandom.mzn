@@ -84,21 +84,28 @@ constraint redundant_constraint(
 %     let {var int: k = count(j in 1..n)(dest_assignment[j,i] == 1)} in
 %     forall(j1 in k+1..n+1)(tour[i,j1] = o)); 
         
-% courier tour symmetry breaking
-% constraint symmetry_breaking_constraint(
-%   lex_lesseq(array1d(tour), [ tour[c,j] | c in reverse(1..m), j in 0..n+1 ]) 
-%   /\ forall(c in 1..m)(
-%     let {var int: maxShift = count(h in 0..n)(tour[c, h]==o)-2} in
-%     forall(shift in 1..maxShift)(
-%       lex_lesseq(tour[c, 0..n+1], [tour[c, (j + shift + 1) mod n + 1] | j in 0..n+1])
-%     )
-%   )
-% );
-
+% courier tour symmetry breaking for couriers with same load capacity
 constraint symmetry_breaking_constraint(
   forall(c in 1..m)(
-    let {var int: maxShift = count(h in 0..n)(tour[c, h]==o)-2} in
-    lex_lesseq(tour[c, 0..n+1], [tour[c, (j + maxShift + 1) mod n + 1] | j in 0..n+1])
+    forall(c_eq in 1..m)(
+      if c != c_eq /\ load[c] == load[c_eq]
+        then lex_greatereq(array1d(dest_assignment), [ if i = c then dest_assignment[j, c_eq]
+                                           elseif i = c_eq then dest_assignment[j, c]
+                                           else dest_assignment[j, i]
+                                           endif
+                                           | j in 1..n, i in 1..m ])
+      endif
+    )
+  )
+);
+
+% symmetry breaking for each courier, shifted routes are deleted (41344 == 44134)
+constraint symmetry_breaking_constraint(
+  forall(c in 1..m)(
+    let {var int: maxShift = count(h in 0..n+1)(tour[c, h]==o)-2} in
+    forall (shift in 1..maxShift)(
+      lex_lesseq([tour[c, i] | i in 1..n], [tour[c, (j + maxShift + 1) mod o] | j in 1..n])
+    )
   )
 );
 
@@ -113,7 +120,7 @@ constraint (
 
 solve
  :: int_search(tour, input_order, indomain)
- :: restart_luby(1000)
+ :: restart_luby(2000)
  minimize maxDist;
 
 % User friendly output

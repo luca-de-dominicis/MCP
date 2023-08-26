@@ -49,7 +49,7 @@ start = time.time()
 model = Model(sense=MINIMIZE, solver_name=CBC)
 model.emphasis = 1 #feasibility
 model.threads = 8
-model.preprocess = 0 #disabled
+model.preprocess = 1 #enabled
 
 # tour[c,i,j] == 1 ---> courier c performed movement from i to j
 tour = model.add_var_tensor((m, n+1, n+1), "tour", var_type=BINARY)
@@ -112,13 +112,12 @@ if status == OptimizationStatus.OPTIMAL:
 elif status == OptimizationStatus.FEASIBLE:
     elapsed_time = time_limit
     print('NON optimal')
-    print('feasible solution cost {} found'.format(model.objective_bound))
+    print('feasible solution cost {} found'.format(model.objective_value))
 else:
     elapsed_time = time_limit
-    try:
-        print(m.objective_bound)
-    except:
-        print(m.objective_value)
+    print(status)
+    print(model.objective_bound)
+
 
         
 output_dict = {
@@ -126,8 +125,8 @@ output_dict = {
     {
         "time": math.floor(elapsed_time),
         "optimal": status == OptimizationStatus.OPTIMAL,
-        "obj": round(model.objective_value),
-        "sol": [courier_tour(c) for c in range(m)]
+        "obj": round(model.objective_value) if status == OptimizationStatus.OPTIMAL or status == OptimizationStatus.FEASIBLE else round(model.objective_bound),
+        "sol": [courier_tour(c) for c in range(m)] if status == OptimizationStatus.OPTIMAL or status == OptimizationStatus.FEASIBLE else []
     }
 }
 
