@@ -51,9 +51,3 @@ Build and run docker
 ```sh
 docker build -t cdmo . && docker run -it cdmo
 ```
-
-## TODO
-- Report
-- Aggiungere lower-bound alla max dist
-- Aggiungere immagini per capire meglio (se necessario e se possibile)
-- Trovare una quadra per i constraint di cp e verificare che gli implied non cambino il solution set

@@ -159,7 +159,7 @@ output_dict = {
     {
         "time": math.floor(elapsed_time),
         "optimal": status == sat,
-        "obj": int(str(z.value())) if status == sat else 0,
+        "obj": int(str(z.value())) if status == sat else int(str(z.upper())) if status == unknown and str(z.upper()) != 'oo' else 0,
         "sol": [courier_tour(c) for c in range(m)] if status == sat else [] 
     }
 }
