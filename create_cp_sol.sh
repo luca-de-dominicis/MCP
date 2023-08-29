@@ -18,7 +18,6 @@ for file in $1/*; do
     echo "&" >> .temp/temp_$num.out
     echo "chuffed" >> .temp/temp_$num.out
     minizinc -m MCP_CP_norandom.mzn -d $file --time-limit $time_th --solver chuffed -D mzn_ignore_symmetry_breaking_constraints=true --output-time --output-objective --output-mode json --json-stream --search-complete-msg "optimal" 2> /dev/null | head -n 1 >> .temp/temp_$num.out
-    python3 generate_cp.py $num
     
     echo "---Solving CP for instance $num usign CHUFFED with symbreak---"
     echo "&" >> .temp/temp_$num.out
