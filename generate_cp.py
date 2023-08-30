@@ -36,7 +36,7 @@ for line in lines:
           i = i+1
         case 1:
             js = json.loads(line)
-            if 'status' in js and js['status'] == "UNKNOWN":
+            if 'status' in js and (js['status'] == "UNKNOWN" or js['status'] == "ERROR"):
                 out = {
                   "time": 300,
                   "optimal": False,

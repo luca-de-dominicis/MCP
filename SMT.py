@@ -130,6 +130,7 @@ z = s.minimize(maxDist)
 
 
 s.set("timeout", 300000)
+set_param("parallel.enable", True)
 status = s.check()
 
 elapsed_time = time.time() - start
