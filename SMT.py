@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# # SMT
+# SMT
 from itertools import combinations
 from z3 import *
 import math, sys, json, time
@@ -22,7 +22,7 @@ def print_input_info():
             print(instance[i][j], end = " ")
         print()
 
-#Caricamento dati
+# Caricamento dati
 file_number = sys.argv[1]
 
 file = open("./Instances/inst"+file_number+".dat", "r")
@@ -34,14 +34,13 @@ load = [int(x) for x in lines[2].split(' ')]
 size = [int(x) for x in lines[3].split(' ')]
 instance = [[int(x) for x in line.rstrip().split(' ') ]for line in lines[4:]]
 o = n
-# print_input_info()
 
-#Definizione solver
+# Definizione solver
 # s = Solver()
 s = Optimize()
 
 
-#Utils
+# Utils
 def at_least_one_np(bool_vars):
     return Or(bool_vars)
 
@@ -57,14 +56,13 @@ def all_false(bool_vars):
 
 start = time.time()
 
-#Decision variables
+# Decision variables
 dest_assignment = [[Bool(f'dest_assignment_{i}_{j}') for j in range(m)] for i in range(n)]
 
 # tour[i][j] = x ---> courier i dispatch item x at j-th route
 tour = [[Int(f'tour_{i}_{j}') for j in range(n+2)] for i in range(m)]
 
 # Distance matrix
-# D = [[Int(f'D_{i}_{j}') for j in range(n+1)] for i in range(n+1)]
 D_val = ArraySort(IntSort(), IntSort())
 D = Array('D', IntSort(), D_val)
 
@@ -86,14 +84,9 @@ for i in range(n):
 for j in range(m):
     s.add(sum([If(dest_assignment[i][j], size[i], 0) for i in range(n)]) <= load[j])
 
-# Initial and final destination are the same
+# Initial and final destinations are the same
 for c in range(m):
     s.add(And(tour[c][0] == o, tour[c][n+1] == o))
-
-# Assigned items must be in courier's tour
-# for c in range(m):
-#     for i in range(n):
-#         s.add(Implies(dest_assignment[i][c], at_least_one_np([tour[c][j] == i for j in range(1, n+1)])))
 
 # Each assigned item is dispatched just once
 for c in range(m):
@@ -105,12 +98,12 @@ for c in range(m):
     for i in range(n):
         s.add(Implies(Not(dest_assignment[i][c]), all_false([tour[c][j] == i for j in range(1, n+1)])))
 
-# Can't go back to deposit
+# Cannot go back to deposit
 for c in range(m):
     for j in range(1,n):
         s.add(Implies(tour[c][j] == o, tour[c][j+1] == o))
 
-# Having an item in the tour implies that the item is assigned
+# Having an item in the tour implies that that item is assigned
 for c in range(m):
     for j in range(1,n+1):
         s.add([Implies(tour[c][j] == i, dest_assignment[i][c]) for i in range(n)])
@@ -126,6 +119,11 @@ maxList = [Sum([D[tour[c][i]][tour[c][i+1]] for i in range(n+1)]) for c in range
 
 for c in range(m):
     s.add(maxDist >= maxList[c])
+
+# Lower bound on maxDist
+smaller_path = min(instance[o][i] + instance[i][o] for i in range(o))
+s.add(maxDist >= smaller_path)
+
 z = s.minimize(maxDist)
 
 
@@ -138,10 +136,6 @@ elapsed_time = time.time() - start
 if status == sat:
     model = s.model()
     print("sat")
-    # for i in range(n):
-        # for j in range(m):
-            # print(model[dest_assignment[i][j]], end = " ")
-        # print()
     for i in range(m):
         print(f"Courier {i}")
         out = [int(str(model[tour[i][j]])) for j in range(n+2)]

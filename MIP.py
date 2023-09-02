@@ -41,7 +41,6 @@ load = [int(x) for x in lines[2].split(' ')]
 size = [int(x) for x in lines[3].split(' ')]
 instance = [[int(x) for x in line.rstrip().split(' ') ]for line in lines[4:]]
 o = n
-# print_input_info()
 
 
 start = time.time()
@@ -72,7 +71,7 @@ for c in range(m):
     for i in range(n+1):
         model += xsum([tour[c][i][j] for j in range(n+1)]) == xsum([tour[c][j][i] for j in range(n+1)]) 
 
-# Can't stay in the same spot
+# Cannot stay in the same spot
 for c in range(m):
     for i in range(n+1):
         model += tour[c][i][i] == 0
@@ -81,7 +80,7 @@ for c in range(m):
 for c in range(m):
     model += xsum([tour[c][i][j]*size[j] for i in range(n+1) for j in range(n)]) <= load[c]
 
-# Initial and final destination are the same
+# Initial and final destinations are the same
 for c in range(m):
     model += xsum([tour[c][n][j] for j in range(n)]) == 1
     model += xsum([tour[c][j][n] for j in range(n)]) == 1
@@ -105,8 +104,6 @@ elapsed_time = time.time() - start
 if status == OptimizationStatus.OPTIMAL:
     for c in range(m):
         print(f"Courier {c}")
-        # for i in range(n+1):
-        #     print([tour[c][i][j].x for j in range(n+1)])
         print(f"TOUR: {courier_tour(c)}")
     print('optimal solution cost {} found'.format(model.objective_value))
 elif status == OptimizationStatus.FEASIBLE:

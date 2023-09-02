@@ -34,9 +34,6 @@ array[1..m, 0..n+1] of var 1..n+1: tour;
 constraint forall(i in 1..n)(
   count(c in 1..m)(dest_assignment[i,c] == 1) = 1);
 
-% constraint forall(i in 1..n)(
-%    sum(c in 1..m)(dest_assignment[i,c]) = 1);
-
 % Each courier cannot load more than his capacity
 constraint forall(c in 1..m)(
    sum(i in 1..n)(size[i] * dest_assignment[i,c]) <= load[c]); 
@@ -51,7 +48,7 @@ constraint forall(c in 1..m, i in 1..n)(
    dest_assignment[i,c] == 1 -> (count(j in 0..n+1)(tour[c,j] == i) == 1)
 );
 
-% Can't depart again once at the depot
+% Cannoy depart again once at the depot
 constraint forall(c in 1..m, j in 1..n)(
     % if tour[c,j] == o
     %   then tour[c,j+1] = o
@@ -73,16 +70,12 @@ constraint redundant_constraint(
   )
 );
 
-% Having an item in the tour implies that the item is assigned
+% Having an item in the tour implies that that item is assigned
 constraint redundant_constraint(
   forall(c in 1..m, i in 1..n, j in 1..n+1)(
     tour[c,j] == i -> dest_assignment[i,c] == 1
   )
 );
-
-% constraint forall(i in 1..m)(
-%     let {var int: k = count(j in 1..n)(dest_assignment[j,i] == 1)} in
-%     forall(j1 in k+1..n+1)(tour[i,j1] = o)); 
         
 % courier tour symmetry breaking for couriers with same load capacity
 constraint symmetry_breaking_constraint(
