@@ -1,6 +1,6 @@
 # MCP
 
-## Multiple couriers problem
+## Multiple Couriers Problem
 ```sh
 minizinc -m MCP_CP.mzn -d Instances/instXX.dzn -a -r 781948 --solver-statistics --time-limit 300000 -D mzn_ignore_symmetry_breaking_constraints=false
 ```
